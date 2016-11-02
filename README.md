@@ -4,24 +4,16 @@ ESP8266 Docker Buildbox
 Usage
 =====
 
-> sudo docker build .
+Build
+> docker build -t esp8266-docker-crasu 
 
-Export the serial adaptor
-=========================
+Run
+> docker run -ti -v $(pwd):/docker-build esp8266-docker-crasu /bin/bash
 
-You can export the ttyUSB0 device from the HOST to the GUEST instance with this command:
+Inside container sample checkout&compile
+> https://github.com/espressif/esp8266-nonos-sample-code
+> cd source-code-examples/basic_example
+> make
 
-> root@mybox# docker run --privileged -v=/dev/ttyUSB0:/dev/tty-from-host -i -t zoobab/esp8266-docker-buildbox /bin/bash
-> 
-> root@7dfd28f629ce:/# ls /dev/tty*
-> 
-> /dev/tty  /dev/tty-from-host  /dev/tty0  /dev/tty1  /dev/tty2
-> /dev/tty3  /dev/tty4  /dev/tty5  /dev/tty6  /dev/tty7  /dev/tty8
-> /dev/tty9
-
-Todo
-====
-
-* Add blinky example
-* Add esptool to push blinky example
-* Find some other simpler examples
+Outside container flash
+> esptool.py  --port /dev/ttyUSB0 write_flash --flash_mode dio 0x00000 firmware/0x00000.bin 0x40000 firmware/0x40000.bin
